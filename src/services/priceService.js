@@ -1,22 +1,21 @@
 // Real service using SerpAPI for image recognition and price comparison
-
-const SERPAPI_KEY = import.meta.env.VITE_SERPAPI_KEY;
-const SERPAPI_ENDPOINT = 'https://serpapi.com/search.json';
+// Uses serverless function to avoid CORS issues
 
 export const priceService = {
     analyzeAndSearch: async (imageUrl) => {
         try {
-            // Use Google Lens API from SerpAPI
-            const params = new URLSearchParams({
-                engine: 'google_lens',
-                url: imageUrl,
-                api_key: SERPAPI_KEY,
+            // Call our serverless function instead of SerpAPI directly
+            const response = await fetch('/.netlify/functions/search-product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ imageUrl }),
             });
 
-            const response = await fetch(`${SERPAPI_ENDPOINT}?${params}`);
-
             if (!response.ok) {
-                throw new Error(`SerpAPI error: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || `API error: ${response.status}`);
             }
 
             const data = await response.json();
