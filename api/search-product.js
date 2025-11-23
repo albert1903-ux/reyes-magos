@@ -41,6 +41,9 @@ export default async function handler(req, res) {
             engine: 'google_lens',
             url: imageUrl,
             api_key: SERPAPI_KEY,
+            country: 'es', // Spain
+            hl: 'es', // Spanish language
+            gl: 'es', // Geographic location: Spain
         });
 
         const apiUrl = `https://serpapi.com/search.json?${params}`;
