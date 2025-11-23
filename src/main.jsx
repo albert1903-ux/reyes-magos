@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <BrowserRouter basename="/reyes-magos">
+        <BrowserRouter>
           <App />
         </BrowserRouter>
       </ThemeProvider>
