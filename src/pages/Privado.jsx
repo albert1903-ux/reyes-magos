@@ -142,25 +142,36 @@ const Privado = () => {
                                                             <Typography variant="subtitle2" gutterBottom>
                                                                 {comparisonResults[gift.id].productName}
                                                             </Typography>
+                                                            {comparisonResults[gift.id].message && (
+                                                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                                                    {comparisonResults[gift.id].message}
+                                                                </Typography>
+                                                            )}
                                                             <List dense>
-                                                                {comparisonResults[gift.id].prices.map((item, index) => (
-                                                                    <ListItem
-                                                                        key={index}
-                                                                        secondaryAction={
-                                                                            <Button
-                                                                                size="small"
-                                                                                onClick={() => applyPrice(gift.id, item.price, item.store)}
-                                                                            >
-                                                                                Aplicar
-                                                                            </Button>
-                                                                        }
-                                                                    >
-                                                                        <ListItemText
-                                                                            primary={`${item.price}€ - ${item.store}`}
-                                                                            secondary={index === 0 ? <Chip label="Mejor Precio" color="success" size="small" /> : null}
-                                                                        />
-                                                                    </ListItem>
-                                                                ))}
+                                                                {comparisonResults[gift.id].prices
+                                                                    .filter(item => item.price > 0)
+                                                                    .map((item, index) => (
+                                                                        <ListItem
+                                                                            key={index}
+                                                                            secondaryAction={
+                                                                                <Button
+                                                                                    size="small"
+                                                                                    onClick={() => applyPrice(gift.id, item.price, item.store)}
+                                                                                    component="a"
+                                                                                    href={item.url}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                >
+                                                                                    Ver
+                                                                                </Button>
+                                                                            }
+                                                                        >
+                                                                            <ListItemText
+                                                                                primary={`${item.price.toFixed(2)}€ - ${item.store}`}
+                                                                                secondary={index === 0 ? <Chip label="Mejor Precio" color="success" size="small" /> : null}
+                                                                            />
+                                                                        </ListItem>
+                                                                    ))}
                                                             </List>
                                                         </Box>
                                                     )}
