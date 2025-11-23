@@ -83,7 +83,7 @@ const Pedir = () => {
                     width: '100%',
                     height: '50vh', // Increased height
                     minHeight: 300,
-                    backgroundImage: 'url(/reyes-magos/assets/reyes_magos_top.png)',
+                    backgroundImage: 'url(/assets/reyes_magos_top.png)',
                     backgroundPosition: 'center',
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
@@ -114,7 +114,7 @@ const Pedir = () => {
                             position: 'relative',
                             height: 250,
                             width: '100%',
-                            backgroundImage: 'url(/reyes-magos/assets/christmas_header_bg.png)',
+                            backgroundImage: 'url(/assets/christmas_header_bg.png)',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             display: 'flex',
