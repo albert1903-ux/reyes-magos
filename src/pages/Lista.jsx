@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardMedia, Grid, IconButton, CircularProgress } from '@mui/material';
+import { Box, Typography, Card, CardMedia, Grid, IconButton, CircularProgress, Container } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { supabase } from '../lib/supabase';
@@ -54,61 +54,63 @@ const Lista = () => {
     };
 
     return (
-        <Box sx={{ my: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                Lista de Deseos
-            </Typography>
+        <Container maxWidth="md" sx={{ pt: 2 }}>
+            <Box sx={{ pb: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom sx={{ fontFamily: '"Merriweather", serif', color: 'primary.main', textAlign: 'center', mb: 3 }}>
+                    Lista de Deseos de {selectedChildId ? '...' : '...'}
+                </Typography>
 
-            <ChildSelector />
+                <ChildSelector />
 
-            {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                <Grid container spacing={2}>
-                    {gifts.map((gift) => (
-                        <Grid item xs={6} sm={4} key={gift.id}>
-                            <Card sx={{ position: 'relative' }}>
-                                <CardMedia
-                                    component="img"
-                                    height="140"
-                                    image={gift.image_url}
-                                    alt="Regalo"
-                                />
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        right: 0,
-                                        bgcolor: 'rgba(255, 255, 255, 0.7)',
-                                        borderTopLeftRadius: 8,
-                                    }}
-                                >
-                                    <IconButton
-                                        size="small"
-                                        onClick={() => updatePriority(gift.id, gift.priority, 1)}
+                {loading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                        {gifts.map((gift) => (
+                            <Grid item xs={6} sm={4} key={gift.id}>
+                                <Card sx={{ position: 'relative' }}>
+                                    <CardMedia
+                                        component="img"
+                                        height="140"
+                                        image={gift.image_url}
+                                        alt="Regalo"
+                                    />
+                                    <Box
+                                        sx={{
+                                            position: 'absolute',
+                                            bottom: 0,
+                                            right: 0,
+                                            bgcolor: 'rgba(255, 255, 255, 0.7)',
+                                            borderTopLeftRadius: 8,
+                                        }}
                                     >
-                                        <ArrowUpwardIcon fontSize="small" />
-                                    </IconButton>
-                                    <IconButton
-                                        size="small"
-                                        onClick={() => updatePriority(gift.id, gift.priority, -1)}
-                                    >
-                                        <ArrowDownwardIcon fontSize="small" />
-                                    </IconButton>
-                                </Box>
-                            </Card>
-                        </Grid>
-                    ))}
-                    {gifts.length === 0 && selectedChildId && (
-                        <Typography variant="body1" sx={{ mt: 2, width: '100%', textAlign: 'center' }}>
-                            No hay regalos en la lista todavía.
-                        </Typography>
-                    )}
-                </Grid>
-            )}
-        </Box>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => updatePriority(gift.id, gift.priority, 1)}
+                                        >
+                                            <ArrowUpwardIcon fontSize="small" />
+                                        </IconButton>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => updatePriority(gift.id, gift.priority, -1)}
+                                        >
+                                            <ArrowDownwardIcon fontSize="small" />
+                                        </IconButton>
+                                    </Box>
+                                </Card>
+                            </Grid>
+                        ))}
+                        {gifts.length === 0 && selectedChildId && (
+                            <Typography variant="body1" sx={{ mt: 2, width: '100%', textAlign: 'center' }}>
+                                No hay regalos en la lista todavía.
+                            </Typography>
+                        )}
+                    </Grid>
+                )}
+            </Box>
+        </Container>
     );
 };
 

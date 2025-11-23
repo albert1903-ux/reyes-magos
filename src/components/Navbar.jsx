@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
-import ListIcon from '@mui/icons-material/List';
-import PersonIcon from '@mui/icons-material/Person';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import StarIcon from '@mui/icons-material/Star';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Navbar = () => {
     }, [location.pathname]);
 
     return (
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000 }} elevation={3}>
             <BottomNavigation
                 showLabels
                 value={value}
@@ -46,9 +46,9 @@ const Navbar = () => {
                     }
                 }}
             >
-                <BottomNavigationAction label="Pedir" icon={<EditIcon />} />
-                <BottomNavigationAction label="Lista" icon={<ListIcon />} />
-                <BottomNavigationAction label="Privado" icon={<PersonIcon />} />
+                <BottomNavigationAction label="Pedir" icon={<CardGiftcardIcon />} />
+                <BottomNavigationAction label="Lista" icon={<StarIcon />} />
+                <BottomNavigationAction label="Privado" icon={<AdminPanelSettingsIcon />} />
             </BottomNavigation>
         </Paper>
     );
