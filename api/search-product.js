@@ -1,9 +1,14 @@
 // Vercel Serverless Function to proxy SerpAPI requests and avoid CORS issues
 
 export default async function handler(req, res) {
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
 
     try {
