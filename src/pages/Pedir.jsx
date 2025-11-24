@@ -112,7 +112,7 @@ const Pedir = () => {
                     <Box
                         sx={{
                             position: 'relative',
-                            height: 250,
+                            height: 200,
                             width: '100%',
                             backgroundImage: 'url(/assets/christmas_header_bg.png)',
                             backgroundSize: 'cover',

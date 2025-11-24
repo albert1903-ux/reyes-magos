@@ -21,19 +21,16 @@ const theme = createTheme({
     typography: {
         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
         h1: {
-            fontFamily: '"Merriweather", serif',
             fontSize: '2rem',
             fontWeight: 700,
             color: '#D32F2F',
         },
         h2: {
-            fontFamily: '"Merriweather", serif',
             fontSize: '1.5rem',
             fontWeight: 700,
             color: '#2E7D32',
         },
         h4: {
-            fontFamily: '"Merriweather", serif',
             fontWeight: 700,
             color: '#D32F2F',
         },
