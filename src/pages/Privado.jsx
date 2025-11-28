@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardMedia, CardContent, Grid, TextField, Checkbox, FormControlLabel, CircularProgress, Button, Divider, List, ListItem, ListItemText, Chip, Container, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Typography, Card, CardMedia, CardContent, Grid, TextField, Checkbox, FormControlLabel, CircularProgress, Button, Divider, List, ListItem, ListItemText, Chip, Container, Link, Accordion, AccordionSummary, AccordionDetails, Dialog } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -15,6 +15,7 @@ const Privado = () => {
     const [loading, setLoading] = useState(true);
     const [analyzing, setAnalyzing] = useState({}); // Map of giftId -> boolean
     const [comparisonResults, setComparisonResults] = useState({}); // Map of giftId -> result object
+    const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
         fetchGifts();
@@ -29,6 +30,7 @@ const Privado = () => {
           *,
           children (name)
         `)
+                .order('priority', { ascending: false })
                 .order('created_at', { ascending: false });
 
             if (selectedChildId) {
@@ -46,21 +48,27 @@ const Privado = () => {
         }
     };
 
-    const handleUpdate = async (giftId, field, value) => {
+    const handleSave = async (giftId, field, value) => {
         try {
+            let valueToSave = value;
+            if (field === 'price' && value === '') {
+                valueToSave = null;
+            }
+
             const { error } = await supabase
                 .from('gifts')
-                .update({ [field]: value })
+                .update({ [field]: valueToSave })
                 .eq('id', giftId);
 
             if (error) throw error;
-
-            // Optimistic update
-            setGifts(gifts.map(g => g.id === giftId ? { ...g, [field]: value } : g));
         } catch (error) {
             console.error('Error updating gift:', error);
             fetchGifts(); // Revert on error
         }
+    };
+
+    const handleLocalChange = (giftId, field, value) => {
+        setGifts(gifts.map(g => g.id === giftId ? { ...g, [field]: value } : g));
     };
 
     const handleSearchPrice = async (giftId, imageUrl) => {
@@ -145,25 +153,35 @@ const Privado = () => {
                                         {/* PARTE SUPERIOR: CARD PRINCIPAL */}
                                         <Box sx={{ display: "flex", width: "100%" }}>
 
-                                            {/* IMAGEN IZQUIERDA + CHECK */}
+                                            {/* IMAGEN IZQUIERDA */}
                                             <Box sx={{ position: "relative", width: "30%" }}>
-                                                <Checkbox
-                                                    checked={gift.is_bought || false}
-                                                    onChange={(e) => handleUpdate(gift.id, 'is_bought', e.target.checked)}
-                                                    size="small"
-                                                    sx={{ position: "absolute", top: 8, left: 8, zIndex: 2, bgcolor: 'rgba(255,255,255,0.8)', borderRadius: 1 }}
-                                                />
                                                 <CardMedia
                                                     component="img"
                                                     image={gift.image_url}
                                                     alt="Regalo"
-                                                    sx={{ width: "100%", height: "100%", objectFit: "cover", minHeight: 200 }}
+                                                    sx={{ width: "100%", height: "100%", objectFit: "cover", minHeight: 200, cursor: 'pointer' }}
+                                                    onClick={() => setSelectedImage(gift.image_url)}
                                                 />
                                             </Box>
 
-                                            {/* CONTENIDO DERECHO */}
                                             <CardContent sx={{ width: "70%" }}>
-                                                <Typography variant="h6" gutterBottom>{gift.children?.name}</Typography>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                                    <Typography variant="h6" gutterBottom>{gift.children?.name}</Typography>
+
+                                                    <Button
+                                                        variant={gift.is_bought ? "contained" : "outlined"}
+                                                        color={gift.is_bought ? "success" : "primary"}
+                                                        size="small"
+                                                        onClick={() => {
+                                                            const newValue = !gift.is_bought;
+                                                            handleLocalChange(gift.id, 'is_bought', newValue);
+                                                            handleSave(gift.id, 'is_bought', newValue);
+                                                        }}
+                                                        sx={{ minWidth: 100 }}
+                                                    >
+                                                        {gift.is_bought ? "Comprado" : "Pendiente"}
+                                                    </Button>
+                                                </Box>
 
                                                 <Grid container spacing={2}>
                                                     <Grid item xs={6}>
@@ -172,7 +190,8 @@ const Privado = () => {
                                                             size="small"
                                                             type="number"
                                                             value={gift.price || ''}
-                                                            onChange={(e) => handleUpdate(gift.id, 'price', e.target.value)}
+                                                            onChange={(e) => handleLocalChange(gift.id, 'price', e.target.value)}
+                                                            onBlur={(e) => handleSave(gift.id, 'price', e.target.value)}
                                                             InputProps={{ startAdornment: <Typography>€&nbsp;</Typography> }}
                                                             fullWidth
                                                         />
@@ -183,7 +202,8 @@ const Privado = () => {
                                                             label="Asignado a"
                                                             size="small"
                                                             value={gift.assigned_to || ''}
-                                                            onChange={(e) => handleUpdate(gift.id, 'assigned_to', e.target.value)}
+                                                            onChange={(e) => handleLocalChange(gift.id, 'assigned_to', e.target.value)}
+                                                            onBlur={(e) => handleSave(gift.id, 'assigned_to', e.target.value)}
                                                             fullWidth
                                                         />
                                                     </Grid>
@@ -282,6 +302,20 @@ const Privado = () => {
                     )}
                 </Box>
             </Container>
+            <Dialog
+                open={!!selectedImage}
+                onClose={() => setSelectedImage(null)}
+                maxWidth="md"
+                fullWidth
+            >
+                <Box sx={{ position: 'relative', bgcolor: 'black', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh', p: 0 }}>
+                    <img
+                        src={selectedImage}
+                        alt="Regalo en grande"
+                        style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }}
+                    />
+                </Box>
+            </Dialog>
         </PinProtection>
     );
 };
